@@ -47,6 +47,10 @@ int main(int argc, char *argv[]) {
     while (x_size < csrMatrix.cols && fscanf(file2, "%lf,", &x[x_size]) == 1) {
         x_size++;
     }
+    if (x_size != csrMatrix.cols) {
+        std::cerr << "Error: Dense vector size mismatch!" << std::endl;
+        exit(1);
+    }
 
     // create an array with the same size as the number of rows in the csrMatrix
     double *y = new double[csrMatrix.rows];
@@ -54,14 +58,23 @@ int main(int argc, char *argv[]) {
     MKL_INT n = csrMatrix.rows; // Size of the matrix (n x n)
     MKL_INT m = csrMatrix.cols; // Number of non-zero elements
 
-    MKL_INT *ia = reinterpret_cast<MKL_INT *>(csrMatrix.row_ptrs);
-    MKL_INT *ja = reinterpret_cast<MKL_INT *>(csrMatrix.col_indices);
+    MKL_INT *ia = new MKL_INT[csrMatrix.rows + 1];
+    MKL_INT *ja = new MKL_INT[csrMatrix.nnz];
+
+    std::copy(csrMatrix.row_ptrs, csrMatrix.row_ptrs + csrMatrix.rows + 1, ia);
+    std::copy(csrMatrix.col_indices, csrMatrix.col_indices + csrMatrix.nnz, ja);
+
     double *a = csrMatrix.values;
 
     // Create a sparse matrix handle
     sparse_matrix_t A;
-    mkl_sparse_d_create_csr(&A, SPARSE_INDEX_BASE_ZERO, n, m, ia, ia + 1, ja,
-                            a);
+    sparse_status_t status = mkl_sparse_d_create_csr(&A, SPARSE_INDEX_BASE_ZERO,
+                                                     n, m, ia, ia + 1, ja, a);
+    if (status != SPARSE_STATUS_SUCCESS) {
+        std::cerr << "Error creating sparse matrix (status: " << status << ")"
+                  << std::endl;
+        exit(1);
+    }
 
     // Perform sparse matrix-vector multiplication (y = A * x)
     struct matrix_descr descr;

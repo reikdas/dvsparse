@@ -1,2 +1,5 @@
 pytest
 scipy
+pandas
+matplotlib
+seaborn

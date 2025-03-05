@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(OPTIMIZATION_FLAGS "-O3 -march=native -funroll-all-loops -mprefer-vector-width=512 -mavx -ffast-math")
 
-option(ENABLE_OPENMP "Enable a OPENMP" OFF)
+option(ENABLE_OPENMP "Enable OPENMP" OFF)
 if (ENABLE_OPENMP)
     find_package(OpenMP REQUIRED)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OPTIMIZATION_FLAGS} -fopenmp -DOPENMP")

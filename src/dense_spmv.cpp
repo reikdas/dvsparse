@@ -29,8 +29,8 @@ double *convertCOOtoDense(const COO &cooMatrix) {
     return denseMatrix;
 }
 
-double *mv(const double *denseMatrix, const double *x, int rows,
-                        int cols, double *y) {
+double *mv(const double *denseMatrix, const double *x, int rows, int cols,
+           double *y) {
     // Perform matrix-vector multiplication
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
