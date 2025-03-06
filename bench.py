@@ -7,14 +7,15 @@ import pandas as pd
 import seaborn as sns
 
 from tensor_gen import MTX_DIR, VEC_DIR, dense_vector_gen, sparse_matrix_gen
+from utils import build_project, BUILD_DIR
 
 BASE_PATH = pathlib.Path(__file__).resolve().parent
 
-BUILD_DIR = os.path.join(BASE_PATH, "build")
-if not os.path.exists(BUILD_DIR):
-    os.mkdir(BUILD_DIR)
-subprocess.check_output(["cmake", ".."], cwd=BUILD_DIR)
-subprocess.check_output(["make"], cwd=BUILD_DIR)
+build_project()
+
+naive_path = os.path.join(BASE_PATH, "results", "naive_spmv.csv")
+dense_path = os.path.join(BASE_PATH, "results", "dense_spmv.csv")
+mkl_path = os.path.join(BASE_PATH, "results", "mkl_spmv.csv")
 
 side = [1000, 2000, 5000, 10000, 20000, 30000, 40000]
 density = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -53,9 +54,6 @@ def draw_heatmap(f_baseline, f_dense):
 if __name__ == "__main__":
     MAT_VAL = 1.1
     VEC_VAL = 1.5
-    naive_path = os.path.join(BASE_PATH, "naive_spmv.csv")
-    dense_path = os.path.join(BASE_PATH, "dense_spmv.csv")
-    mkl_path = os.path.join(BASE_PATH, "mkl_spmv.csv")
 
     with open(naive_path, "w") as f_naive:
         f_naive.write("side,density,time\n")

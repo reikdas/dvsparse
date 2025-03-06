@@ -5,6 +5,7 @@ import subprocess
 import scipy
 
 from tensor_gen import MTX_DIR, VEC_DIR, dense_vector_gen, sparse_matrix_gen
+from utils import build_project, BUILD_DIR
 
 BASE_PATH = pathlib.Path(__file__).resolve().parent
 
@@ -24,12 +25,7 @@ def cmp_file(file1, file2):
                     return False
     return True
 
-# Run make to compile the code
-BUILD_DIR = os.path.join(BASE_PATH, "build")
-if not os.path.exists(BUILD_DIR):
-    os.mkdir(BUILD_DIR)
-subprocess.check_output(["cmake", ".."], cwd=BUILD_DIR)
-subprocess.check_output(["make"], cwd=BUILD_DIR)
+build_project()
 
 VEC_VAL = 1.5
 
