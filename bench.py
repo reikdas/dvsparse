@@ -48,7 +48,7 @@ def draw_heatmap(f_baseline, f_dense):
     plt.title(f"Speedup of dense over {filename}")
     plt.xlabel("Density")
     plt.ylabel("Side Length")
-    plt.savefig(os.path.join(BASE_PATH, f"speedup_{filename}.pdf"))
+    plt.savefig(os.path.join(BASE_PATH, "results", f"speedup_{filename}.pdf"))
 
 if __name__ == "__main__":
     MAT_VAL = 1.1
