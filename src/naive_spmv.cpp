@@ -10,7 +10,7 @@
 #include "mtx_to_csr.h"
 
 // add a function to calculate the matrix-vector product
-void spmv(const CSR &csr, const double *x, double *y) {
+void spmv(const CSR &csr, const double *__restrict x, double *__restrict y) {
 
 // add pragma omp parallel for only if a flag is defined at compile time
 #ifdef OPENMP
