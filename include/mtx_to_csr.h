@@ -227,7 +227,7 @@ COO readMTXtoCOO(const std::string &filename) {
     }
 
     // sort the COO matrix by row and col indices
-    // coo.remove_duplicates(); // commenting out for now
+    coo.remove_duplicates(); // commenting out for now
     coo.sort();
 
     file.close();

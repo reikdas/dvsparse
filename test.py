@@ -7,6 +7,8 @@ import scipy
 from tensor_gen import MTX_DIR, VEC_DIR, dense_vector_gen, sparse_matrix_gen
 from utils import build_project, BUILD_DIR
 
+from src.codegen_many_dense import codegen
+
 BASE_PATH = pathlib.Path(__file__).resolve().parent
 
 def cmp_file(file1, file2):
@@ -28,9 +30,10 @@ def cmp_file(file1, file2):
 build_project()
 
 VEC_VAL = 1.5
+MAT_VAL = 1.1
 
 def setup_file():
-    sparse_matrix_gen(rows=3, cols=3, density=90, val=1.1)
+    sparse_matrix_gen(rows=3, cols=3, density=90, val=MAT_VAL)
     dense_vector_gen(3, val=VEC_VAL)
 
 def run_test(baseline: str):
@@ -54,3 +57,22 @@ def test_mkl():
 
 def test_dense():
     run_test("dense_spmv")
+
+def test_mkl_coo():
+    run_test("mkl_coo_spmv")
+
+def test_many_dense():
+    sparse_matrix_gen(rows=100, cols=100, density=100, val=MAT_VAL)
+    dense_vector_gen(100, val=VEC_VAL)
+    codegen(20, os.path.join(MTX_DIR, "100x100_100.mtx"))
+    build_project()
+    output = subprocess.run(["./many_dense", os.path.join(MTX_DIR, "100x100_100.mtx"), str(1), str(1), os.path.join(VEC_DIR, "generated_vector_100.vector")], capture_output=True, cwd=BUILD_DIR)
+    output = output.stdout.decode("utf-8").split("\n")[1:]
+    with open(os.path.join("tests", "output.txt"), "w") as f:
+        f.write("\n".join(output))
+    mtx = scipy.io.mmread(os.path.join(BASE_PATH, "Generated_Sparse_Matrices", "100x100_100.mtx"))
+    vec = [VEC_VAL] * 100
+    result = [round(x, 2) for x in mtx @ vec]
+    with open(os.path.join("tests", "expected_output.txt"), "w") as f:
+        f.write("\n".join(map(str, result)))
+    assert cmp_file(os.path.join("tests", "output.txt"), os.path.join("tests", "expected_output.txt"))
