@@ -24,3 +24,12 @@ add_executable(mkl_spmv src/mkl_spmv.cpp)
 target_compile_options(mkl_spmv PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_COMPILE_OPTIONS>)
 target_include_directories(mkl_spmv PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_INCLUDE_DIRECTORIES>)
 target_link_libraries(mkl_spmv PUBLIC $<LINK_ONLY:MKL::MKL>)
+
+add_executable(mkl_coo_spmv src/mkl_coo_spmv.cpp)
+target_compile_options(mkl_coo_spmv PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_COMPILE_OPTIONS>)
+target_include_directories(mkl_coo_spmv PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_INCLUDE_DIRECTORIES>)
+target_link_libraries(mkl_coo_spmv PUBLIC $<LINK_ONLY:MKL::MKL>)
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/many_dense.cpp")
+    add_executable(many_dense src/many_dense.cpp)
+endif()
